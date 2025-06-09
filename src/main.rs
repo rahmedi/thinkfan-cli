@@ -12,7 +12,7 @@ fn main() {
             .short('s')
             .long("set")
             .required(true)
-            .help("set fans\nAvailable commands:\n1~7: is fan levels\nauto: automatic mode\nfull-speed: sets fan to full-speed\ndisengaged: sets fan to its maximum speed\n\nExamples:\nthinkfan-cli -s 7\n thinkfan-cli -s disengaged")
+            .help("set fans\nAvailable commands:\n1~7: is fan levels\nauto: automatic mode\nfull-speed: sets fan to full-speed\ndisengaged: sets fan to its maximum speed\nenable: enables fan control\ndisable: disables fan control\n\nExamples:\nthinkfan-cli -s 7\nthinkfan-cli -s disengaged")
         ).get_matches();
     let userinput = match matchy.get_one::<String>("set"){
         Some(set) => set.clone(),
