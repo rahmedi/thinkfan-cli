@@ -1,11 +1,22 @@
 use std::{fs::{OpenOptions}, io::Write};
 use clap::{self, Arg};
+use libc;
 use colored::Colorize;
 // Here is for executing other functions
 fn main() {
+    match check_root() {
+        true => {
+            1;
+        }
+        false => {
+            let error = format!("You are not root, please run program with sudo").red();
+            println!("{}", error);
+            std::process::exit(1);
+        }
+    }
     let matchy = clap::Command::new("thinkfan-cli")
-        .version("0.1")
-        .about("controlling thinkpads fan using command line tool")
+        .version("0.2")
+        .about("controlling thinkpad fan using command line tool")
         .author("rahmedi rahmedyev@gmail.com")
         .arg(
             Arg::new("set")
@@ -62,4 +73,8 @@ fn fan_level(level: String){
     let mut fan = OpenOptions::new().write(true).open(fan_path_true).expect("File is not available");
 
     fan.write_all(level.as_bytes()).expect("Writing error!");
+}
+
+fn check_root() -> bool{
+    unsafe { libc::getuid() == 0 }
 }
