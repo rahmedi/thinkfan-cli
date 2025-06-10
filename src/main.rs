@@ -15,7 +15,7 @@ fn main() {
         }
     }
     let matchy = clap::Command::new("thinkfan-cli")
-        .version("0.2")
+        .version("0.1.1")
         .about("controlling thinkpad fan using command line tool")
         .author("rahmedi rahmedyev@gmail.com")
         .arg(
