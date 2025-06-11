@@ -34,7 +34,7 @@ fn main() {
         }
     };
 
-    let commandlist= vec!["1", "2", "3", "4", "5", "6", "7", "auto", "disengaged", "full-speed", "enable", "disable"]; 
+    let commandlist= vec!["0", "1", "2", "3", "4", "5", "6", "7", "auto", "disengaged", "full-speed", "enable", "disable"]; 
 
     let modified_input = match commandlist.iter().any(|cmd| userinput.starts_with(cmd)){
         true => format!("level {}", userinput),
