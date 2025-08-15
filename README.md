@@ -10,6 +10,7 @@ Directly interacts with `/proc/acpi/ibm/fan` for setting fan levels — no depen
 * 🔧 Set manual fan levels instantly
 * 🐿 Reads and writes directly to IBM ACPI fan interface
 * 🌬️ No daemons or background services required
+* 📄 Reading fan status instantly
 
 ---
 
