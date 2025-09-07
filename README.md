@@ -16,6 +16,15 @@ Directly interacts with `/proc/acpi/ibm/fan` for setting fan levels — no depen
 
 ## 📦 Installation
 
+### IMPORTANT!!!
+
+Please enable thinkpad acpi module or thinkfan-cli will not work
+
+```bash
+sudo modprobe -r thinkpad_acpi
+sudo modprobe thinkpad_acpi fan_control=1
+```
+
 ### 📦 Arch Linux (via AUR)
 
 ```bash
