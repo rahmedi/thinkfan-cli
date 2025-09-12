@@ -16,6 +16,9 @@ fn main() {
         }
         return;
     }
+    if !check_module() {
+        return;
+    }
     let matchy = clap::Command::new("thinkfan-cli")
         .version("0.1.2")
         .about("controlling thinkpad fan using command line tool")
@@ -42,7 +45,7 @@ fn main() {
     let userinput = match matchy.get_one::<String>("set") {
         Some(set) => set.clone(),
         None => { 
-            eprintln!("{}",format!("Input is not valid!").red());
+            eprintln!("{}",format!("Input is not valid! try with -h").red());
             return;
         }
     };
@@ -118,6 +121,26 @@ fn fan_level(level: String) {
 
     fan.write_all(level.as_bytes()).expect("Writing error!");
 }
+
+fn check_module() -> bool{
+    match std::fs::read_to_string("/sys/module/thinkpad_acpi/parameters/fan_control"){
+        Ok(content) => {
+            let content = content.trim();
+            if content == "Y" {
+                true
+            }else if content == "N"{
+                eprintln!("Hey, did you enabled the thinkpad_acpi module? Seems like you didnt.");
+                false
+            }else {
+                println!("Unknown value {} :(", content);
+                false
+            }
+        }Err(e) => {
+            eprintln!("Failed to read file, do you using a thinkpad? (line 133) ({})", e);
+            false
+        }
+    }
+} 
 
 fn check_root() -> bool {
     unsafe { libc::getuid() == 0 }
