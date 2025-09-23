@@ -1,7 +1,7 @@
 # thinkfan-cli
 
 **A minimalist, fast, and terminal-native fan control tool for ThinkPads.**
-Directly interacts with `/proc/acpi/ibm/fan` for setting fan levels — no dependency on `thinkfan`.
+Directly interacts with `/proc/acpi/ibm/fan` for setting fan levels - no dependency on `thinkfan`.
 
 ---
 
@@ -55,7 +55,7 @@ Note: Requires root privileges to write to `/proc/acpi/ibm/fan`.
 ## 💬 Feedback & Contributions
 
 Open an issue, suggest a feature, or submit a PR!
-Tested on T480 | X220 | R61i — reports for other models welcome.
+Tested on T480 | X220 | R61i - reports for other models welcome.
 
 ---
 
