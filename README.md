@@ -55,7 +55,7 @@ Note: Requires root privileges to write to `/proc/acpi/ibm/fan`.
 ## 💬 Feedback & Contributions
 
 Open an issue, suggest a feature, or submit a PR!
-Tested on T480 — reports for other models welcome.
+Tested on T480 | X220 | R61i — reports for other models welcome.
 
 ---
 
