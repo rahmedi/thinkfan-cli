@@ -90,7 +90,7 @@ fn main() {
     fan_level(inputbool);
 }
 
-// We're gonna check fan control file to avoid errors.
+// We're gonna check the fan control file to avoid errors.
 fn check_file() -> bool {
     let fan_path = "/proc/acpi/ibm/fan";
     std::path::Path::new(fan_path).exists()
@@ -108,7 +108,7 @@ fn fan_level(level: String) {
     let fan_path_true = match check_file() {
         true => "/proc/acpi/ibm/fan",
         false => {
-            let error = format!("Error, Control file is not available").red();
+            let error = format!("Error, Control file missing.").red();
             eprintln!("{}", error);
             return;
         }
@@ -129,14 +129,14 @@ fn check_module() -> bool{
             if content == "Y" {
                 true
             }else if content == "N"{
-                eprintln!("Hey, did you enabled the thinkpad_acpi module? Seems like you didnt.");
+                eprintln!("Hey, did you enable the thinkpad_acpi module? Seems like you didn't.");
                 false
             }else {
                 println!("Unknown value {} :(", content);
                 false
             }
         }Err(e) => {
-            eprintln!("Failed to read file, do you using a thinkpad? (line 133) ({})", e);
+            eprintln!("Failed to read file, are you using a ThinkPad? (line 133) ({})", e);
             false
         }
     }
