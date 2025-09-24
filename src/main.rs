@@ -129,14 +129,14 @@ fn check_module() -> bool{
             if content == "Y" {
                 true
             }else if content == "N"{
-                eprintln!("Hey, did you enable the thinkpad_acpi module? Seems like you didn't.");
+                eprintln!("Hey, did you enable the thinkpad_acpi module? It appears you didn't.");
                 false
             }else {
                 println!("Unknown value {} :(", content);
                 false
             }
         }Err(e) => {
-            eprintln!("Failed to read file, are you using a ThinkPad? (line 133) ({})", e);
+            eprintln!("Failed to read the file, are you using a ThinkPad? (line 133) ({})", e);
             false
         }
     }
