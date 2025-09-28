@@ -28,7 +28,7 @@ fn main() {
             .short('s')
             .long("set")
             .required(false)
-            .help("Set fan rate\nAvailable commands:\n1~7: is fan levels\nauto: automatic mode\nfull-speed: sets fan to full-speed\extreme: sets fan to its maximum speed\nenable: enables fan control\ndisable: disables fan control\n\nExamples:\nthinkfan-cli -s 7\nthinkfan-cli -s disengaged"))
+            .help("Set fan rate\nAvailable commands:\n1~7: is fan levels\nauto: automatic mode\nfull-speed: sets fan to full-speed\disengaged: sets fan to its maximum speed\nenable: enables fan control\ndisable: disables fan control\n\nExamples:\nthinkfan-cli -s 7\nthinkfan-cli -s disengaged"))
         .arg(
             Arg::new("fetch")
             .short('f')
@@ -59,7 +59,7 @@ fn main() {
         "6",
         "7",
         "auto",
-        "extreme",
+        "disengaged",
         "full-speed",
         "enable",
         "disable",
@@ -79,7 +79,7 @@ fn main() {
             eprintln!("\n{}", "Examples:".yellow());
             eprintln!("  thinkfan-cli -s 7");
             eprintln!("  thinkfan-cli -s auto");
-            eprintln!("  thinkfan-cli -s extreme");
+            eprintln!("  thinkfan-cli -s disengaged");
             return;
         }
     };
