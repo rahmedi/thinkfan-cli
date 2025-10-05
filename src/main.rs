@@ -21,14 +21,14 @@ fn main() {
     }
     let matchy = clap::Command::new("thinkfan-cli")
         .version("0.1.2")
-        .about("controlling thinkpad fan using command line tool")
+        .about("A Versatile Fan Control Utility for ThinkPad")
         .author("rahmedi rahmedyev@gmail.com")
         .arg(
             Arg::new("set")
             .short('s')
             .long("set")
             .required(false)
-            .help("Set fan rate\nAvailable commands:\n1~7: is fan levels\nauto: automatic mode\nfull-speed: sets fan to full-speed\ndisengaged: sets fan to its maximum speed\nenable: enables fan control\ndisable: disables fan control\n\nExamples:\nthinkfan-cli -s 7\nthinkfan-cli -s disengaged"))
+            .help("Set fan rate\nAvailable commands:\n1~7: is fan levels\nauto: automatic mode\nfull-speed: sets fan to full-speed\disengaged: sets fan to its maximum speed\nenable: enables fan control\ndisable: disables fan control\n\nExamples:\nthinkfan-cli -s 7\nthinkfan-cli -s disengaged"))
         .arg(
             Arg::new("fetch")
             .short('f')
@@ -45,7 +45,7 @@ fn main() {
     let userinput = match matchy.get_one::<String>("set") {
         Some(set) => set.clone(),
         None => { 
-            eprintln!("{}",format!("Input is not valid! try with -h").red());
+            eprintln!("{}",format!("Invalid input! Try with -h").red());
             return;
         }
     };
@@ -73,7 +73,7 @@ fn main() {
             eprintln!("  0-7         : Fan levels");
             eprintln!("  auto        : Automatic mode");
             eprintln!("  full-speed  : Full speed");
-            eprintln!("  disengaged  : Maximum speed");
+            eprintln!("  extreme  : Maximum speed");
             eprintln!("  enable      : Enable fan control");
             eprintln!("  disable     : Disable fan control");
             eprintln!("\n{}", "Examples:".yellow());
@@ -90,7 +90,7 @@ fn main() {
     fan_level(inputbool);
 }
 
-// We gonna check fan control file for reducing errors
+// We're gonna check the fan control file to avoid errors.
 fn check_file() -> bool {
     let fan_path = "/proc/acpi/ibm/fan";
     std::path::Path::new(fan_path).exists()
@@ -103,12 +103,12 @@ fn fetch() {
     }
 }
 
-// We interacting with control file for setting fan levels
+// We're using the control file for setting fan levels
 fn fan_level(level: String) {
     let fan_path_true = match check_file() {
         true => "/proc/acpi/ibm/fan",
         false => {
-            let error = format!("Error, Control file is not available").red();
+            let error = format!("Error, Control file missing.").red();
             eprintln!("{}", error);
             return;
         }
@@ -129,14 +129,14 @@ fn check_module() -> bool{
             if content == "Y" {
                 true
             }else if content == "N"{
-                eprintln!("Hey, did you enabled the thinkpad_acpi module? Seems like you didnt.");
+                eprintln!("Hey, did you enable the thinkpad_acpi module? It appears you didn't.");
                 false
             }else {
                 println!("Unknown value {} :(", content);
                 false
             }
         }Err(e) => {
-            eprintln!("Failed to read file, do you using a thinkpad? (line 133) ({})", e);
+            eprintln!("Failed to read the file, are you using a ThinkPad? (line 133) ({})", e);
             false
         }
     }
