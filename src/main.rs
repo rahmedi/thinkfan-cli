@@ -117,7 +117,7 @@ fn fan_level(level: String) {
     let mut fan = OpenOptions::new()
         .write(true)
         .open(fan_path_true)
-        .expect("Failed 71:1");
+        .expect("Critical: ThinkPad ACPI communication failed");
 
     fan.write_all(level.as_bytes()).expect("Writing error!");
 }
