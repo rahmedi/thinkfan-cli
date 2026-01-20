@@ -1,8 +1,12 @@
-// hi :3
-use clap::{self, Arg};
-use colored::Colorize;
+// Begin of Code
 use libc;
 use std::{env, fs::OpenOptions, io::Write};
+
+// Colors
+const RED: &str = "\x1b[31m";
+const YELLOW: &str = "\x1b[33m";
+const RESET: &str = "\x1b[0m";
+
 // Here is for executing other functions
 fn main() {
     if !check_root() {
@@ -10,7 +14,7 @@ fn main() {
         let elevate = std::process::Command::new("sudo")
             .args(&args)
             .status()
-            .expect("elevation error");
+            .expect("Elevation error");
         if !elevate.success() {
             std::process::exit(1);
         }
@@ -19,77 +23,73 @@ fn main() {
     if !check_module() {
         return;
     }
-    let matchy = clap::Command::new("thinkfan-cli")
-        .version("0.1.2")
-        .about("controlling thinkpad fan using command line tool")
-        .author("rahmedi rahmedyev@gmail.com")
-        .arg(
-            Arg::new("set")
-            .short('s')
-            .long("set")
-            .required(false)
-            .help("Set fan rate\nAvailable commands:\n1~7: is fan levels\nauto: automatic mode\nfull-speed: sets fan to full-speed\ndisengaged: sets fan to its maximum speed\nenable: enables fan control\ndisable: disables fan control\n\nExamples:\nthinkfan-cli -s 7\nthinkfan-cli -s disengaged"))
-        .arg(
-            Arg::new("fetch")
-            .short('f')
-            .long("fetch")
-            .action(clap::ArgAction::SetTrue)
-            .help("Fetch's fan status")
-        ).get_matches();
 
-    if matchy.get_flag("fetch"){
-        fetch();
+    let args: Vec<String> = env::args().collect();
+    if args.len() < 2 {
+        help();
         return;
     }
 
-    let userinput = match matchy.get_one::<String>("set") {
-        Some(set) => set.clone(),
-        None => { 
-            eprintln!("{}",format!("Input is not valid! try with -h").red());
-            return;
+    match args[1].as_str(){
+        "-f" | "--fetch" => {
+            fetch();
         }
-    };
-    let commandlist = vec![
-        "0",
-        "1",
-        "2",
-        "3",
-        "4",
-        "5",
-        "6",
-        "7",
-        "auto",
-        "disengaged",
-        "full-speed",
-        "enable",
-        "disable",
-    ];
+        "-s" | "--set" => {
+            if args.len() < 3 {
+                eprintln!("{}Undefinded Level{}",RED,RESET);
+                return;
+            }
+            fanlogic(&args[2]);
+        }
+        "-h" | "--help" => {
+            help();
+        }
+        _ => {
+            help();
+        }
+    }
 
-    let modified_input = match commandlist.iter().any(|cmd| userinput.starts_with(cmd)) {
-        true => format!("level {}", userinput),
-        false => {
-            eprintln!("{}", format!("Invalid Option: {}", userinput).red());
-            eprintln!("\n{}", "Valid options are:".yellow());
-            eprintln!("  0-7         : Fan levels");
-            eprintln!("  auto        : Automatic mode");
-            eprintln!("  full-speed  : Full speed");
-            eprintln!("  disengaged  : Maximum speed");
-            eprintln!("  enable      : Enable fan control");
-            eprintln!("  disable     : Disable fan control");
-            eprintln!("\n{}", "Examples:".yellow());
-            eprintln!("  thinkfan-cli -s 7");
-            eprintln!("  thinkfan-cli -s auto");
-            eprintln!("  thinkfan-cli -s disengaged");
-            return;
-        }
-    };
-    let inputbool = match modified_input.contains("enable") || modified_input.contains("disable") {
-        true => modified_input.replace("level ", ""),
-        false => modified_input.clone(),
-    };
-    fan_level(inputbool);
 }
 
+// Help function, a classic obviously
+fn help(){
+    println!("{}Thinkfan-cli v0.1.3{}",YELLOW,RESET);
+    println!("Usage: thinkfan-cli [OPTIONS]");
+    println!("\nOptions:");
+    println!("  {}-s, --set <LEVEL>{} Sets fan rate",YELLOW,RESET);
+    println!("\n    Available commands are:");
+    println!("          1~7         : Fan levels");
+    println!("          auto        : Automatic mode controlled by EC");
+    println!("          full-speed  : Sets fan to its secure maximum speed");
+    println!("          disengaged  : Overspeeds fan (Warning!)");
+    println!("          enable      : Enables fan control");
+    println!("          disable     : Disables fan control");
+    println!("          ");
+    println!("          Examples:");
+    println!("          thinkfan-cli -s 7");
+    println!("          thinkfan-cli -s disengaged");
+    println!("          ");
+    println!("  {}-f, --fetch{}             Fetch's fan status",YELLOW,RESET);
+    println!("  {}-h, --help{}              Print Help",YELLOW,RESET);
+    println!("  {}-V  --version{}           Print Version",YELLOW,RESET);
+}
+
+fn fanlogic(userinput: &str){
+    let commandlist = vec!["0","1","2","3","4","5","6","7","auto","disengaged","full-speed","enable","disable"];
+
+    if !commandlist.iter().any(|&cmd| userinput == cmd) {
+        eprintln!("{}Invalid Option{}",RED,RESET);
+        return;
+    }
+
+    let level = if userinput == "enable" || userinput == "disable" {
+        userinput.to_string()
+    }else {
+        format!("level {}", userinput)
+    };
+
+    fan_level(level);
+}
 // We gonna check fan control file for reducing errors
 fn check_file() -> bool {
     let fan_path = "/proc/acpi/ibm/fan";
@@ -99,7 +99,7 @@ fn check_file() -> bool {
 fn fetch() {
     match std::fs::read_to_string("/proc/acpi/ibm/fan") {
         Ok(content) => content.lines().take(3).for_each(|line| println!("{}", line)),
-        Err(_) => eprintln!("{}", format!("Reading failed").red()),
+        Err(_) => eprintln!("{}Read Failure{}",RED,RESET),
     }
 }
 
@@ -108,8 +108,7 @@ fn fan_level(level: String) {
     let fan_path_true = match check_file() {
         true => "/proc/acpi/ibm/fan",
         false => {
-            let error = format!("Error, Control file is not available").red();
-            eprintln!("{}", error);
+            eprintln!("{}Control File is not available{}",RED,RESET);
             return;
         }
     };
@@ -136,12 +135,13 @@ fn check_module() -> bool{
                 false
             }
         }Err(e) => {
-            eprintln!("Failed to read file, do you using a thinkpad? (line 133) ({})", e);
+            eprintln!("Failed to read file, are you using a thinkpad? ({})", e);
             false
         }
     }
-} 
+}
 
 fn check_root() -> bool {
     unsafe { libc::getuid() == 0 }
 }
+// End of Code
