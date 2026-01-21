@@ -5,7 +5,7 @@ use std::{env, fs::OpenOptions, io::Write};
 const RED: &str = "\x1b[31m";
 const RESET: &str = "\x1b[0m";
 const FANPATH: &str = "/proc/acpi/ibm/fan";
-const HELP_MSG: &str = "\x1b[33mthinkfan-cli v0.1.3\x1b[0m
+const HELP_MSG: &str = "\x1b[33mthinkfan-cli v0.1.4\x1b[0m
 Usage: thinkfan-cli [OPTIONS]
 
 Options:
@@ -60,7 +60,7 @@ fn main() {
             print!("{}\n", HELP_MSG);
         }
         "-V" | "-v" | "--version" => {
-            println!("v0.1.3");
+            println!("v0.1.4");
         }
         _ => {
             print!("{}\n", HELP_MSG);
