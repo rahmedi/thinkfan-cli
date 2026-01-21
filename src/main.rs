@@ -1,11 +1,26 @@
 // Begin of Code
-use libc;
 use std::{env, fs::OpenOptions, io::Write};
 
-// Colors
+// Constant Variables
 const RED: &str = "\x1b[31m";
-const YELLOW: &str = "\x1b[33m";
 const RESET: &str = "\x1b[0m";
+const FANPATH: &str = "/proc/acpi/ibm/fan";
+const HELP_MSG: &str = "\x1b[33mthinkfan-cli v0.1.3\x1b[0m
+Usage: thinkfan-cli [OPTIONS]
+
+Options:
+  \x1b[33m-s, --set <VALUE>\x1b[0m      Sets fan rate
+  \x1b[33m-f, --fetch\x1b[0m            Fetch fan status
+  \x1b[33m-h, --help\x1b[0m             Print Help
+  \x1b[33m-V, --version\x1b[0m          Print Current Version
+
+Available values for -s:
+  \x1b[33m1~7\x1b[0m                 Fan levels
+  \x1b[33mauto\x1b[0m                Automatic mode controlled by EC
+  \x1b[33mfull-speed\x1b[0m          Secure maximum speed
+  \x1b[33mdisengaged\x1b[0m          Overspeed mode \x1b[31m(WARNING!)\x1b[0m
+  \x1b[33menable\x1b[0m              Enable fan control
+  \x1b[33mdisable\x1b[0m             Disable fan control";
 
 // Here is for executing other functions
 fn main() {
@@ -26,7 +41,7 @@ fn main() {
 
     let args: Vec<String> = env::args().collect();
     if args.len() < 2 {
-        help();
+        print!("{}\n", HELP_MSG);
         return;
     }
 
@@ -42,36 +57,16 @@ fn main() {
             fanlogic(&args[2]);
         }
         "-h" | "--help" => {
-            help();
+            print!("{}\n", HELP_MSG);
+        }
+        "-V" | "-v" | "--version" => {
+            println!("v0.1.3");
         }
         _ => {
-            help();
+            print!("{}\n", HELP_MSG);
         }
     }
 
-}
-
-// Help function, a classic obviously
-fn help(){
-    println!("{}Thinkfan-cli v0.1.3{}",YELLOW,RESET);
-    println!("Usage: thinkfan-cli [OPTIONS]");
-    println!("\nOptions:");
-    println!("  {}-s, --set <LEVEL>{} Sets fan rate",YELLOW,RESET);
-    println!("\n    Available commands are:");
-    println!("          1~7         : Fan levels");
-    println!("          auto        : Automatic mode controlled by EC");
-    println!("          full-speed  : Sets fan to its secure maximum speed");
-    println!("          disengaged  : Overspeeds fan (Warning!)");
-    println!("          enable      : Enables fan control");
-    println!("          disable     : Disables fan control");
-    println!("          ");
-    println!("          Examples:");
-    println!("          thinkfan-cli -s 7");
-    println!("          thinkfan-cli -s disengaged");
-    println!("          ");
-    println!("  {}-f, --fetch{}             Fetch's fan status",YELLOW,RESET);
-    println!("  {}-h, --help{}              Print Help",YELLOW,RESET);
-    println!("  {}-V  --version{}           Print Version",YELLOW,RESET);
 }
 
 fn fanlogic(userinput: &str){
@@ -92,12 +87,11 @@ fn fanlogic(userinput: &str){
 }
 // We gonna check fan control file for reducing errors
 fn check_file() -> bool {
-    let fan_path = "/proc/acpi/ibm/fan";
-    std::path::Path::new(fan_path).exists()
+    std::path::Path::new(FANPATH).exists()
 }
 
 fn fetch() {
-    match std::fs::read_to_string("/proc/acpi/ibm/fan") {
+    match std::fs::read_to_string(FANPATH) {
         Ok(content) => content.lines().take(3).for_each(|line| println!("{}", line)),
         Err(_) => eprintln!("{}Read Failure{}",RED,RESET),
     }
@@ -106,7 +100,7 @@ fn fetch() {
 // We interacting with control file for setting fan levels
 fn fan_level(level: String) {
     let fan_path_true = match check_file() {
-        true => "/proc/acpi/ibm/fan",
+        true => FANPATH,
         false => {
             eprintln!("{}Control File is not available{}",RED,RESET);
             return;
@@ -142,6 +136,12 @@ fn check_module() -> bool{
 }
 
 fn check_root() -> bool {
-    unsafe { libc::getuid() == 0 }
+    let uid: u32;
+    unsafe { std::arch::asm!(
+        "mov eax, 102",
+        "syscall",
+        out("rax") uid,
+    ); }
+    uid == 0
 }
 // End of Code
