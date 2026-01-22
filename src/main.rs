@@ -137,11 +137,26 @@ fn check_module() -> bool{
 
 fn check_root() -> bool {
     let uid: u32;
-    unsafe { std::arch::asm!(
-        "mov eax, 102",
-        "syscall",
-        out("rax") uid,
-    ); }
+    unsafe {
+        #[cfg(target_arch = "x86_64")]{
+            // 64-bit systems
+            std::arch::asm!(
+                "mov eax, 102",
+                "syscall",
+                out("rax") uid,
+            );
+        }
+
+        #[cfg(target_arch = "x86")]
+        {
+            // 32-bit systems
+            std::arch::asm!(
+                "mov eax, 199",
+                "int 0x80",
+                out("eax") uid,
+            );
+        }
+    }
     uid == 0
 }
 // End of Code
