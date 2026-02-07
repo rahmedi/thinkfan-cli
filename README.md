@@ -5,7 +5,7 @@ Directly interacts with `/proc/acpi/ibm/fan` for setting fan levels, no dependen
 
 ---
 
-## ✨ Features
+## Features
 
 * Set manual fan levels instantly
 * Reads and writes directly to IBM ACPI fan interface
@@ -14,23 +14,23 @@ Directly interacts with `/proc/acpi/ibm/fan` for setting fan levels, no dependen
 
 ---
 
-## 📦 Installation
+## Installation
 
 ### IMPORTANT!!!
 
-Please enable thinkpad acpi module or thinkfan-cli will not work
+Please enable thinkpad acpi module to make thinkfan-cli work properly
 
 ```bash
 sudo modprobe thinkpad_acpi fan_control=1
 ```
 
-### 📦 Arch Linux (via AUR)
+### Arch Linux (via AUR)
 
 ```bash
 yay -S thinkfan-cli
 ```
 
-### 🔧 Manual (from source)
+### Manual
 
 ```bash
 git clone https://github.com/rahmedi/thinkfan-cli.git
@@ -41,25 +41,26 @@ sudo cp target/release/thinkfan-cli /usr/bin/
 
 ---
 
-## 🚀 Usage
+## Usage
 
 ```bash
-thinkfan-cli -s auto       # Switch to Auto controlled fan mode
-thinkfan-cli -s 3   # Set fan to level 3 manually (0–7)
+sudo thinkfan-cli -h            # Help message
+sudo thinkfan-cli -s auto       # Switch to Auto controlled fan mode
+sudo thinkfan-cli -s 3          # Set fan to level 3 manually (0–7)
 ```
 
 Note: Requires root privileges to write to `/proc/acpi/ibm/fan`.
 
 ---
 
-## 💬 Feedback & Contributions
+## Feedbacks
 
-Open an issue, suggest a feature, or submit a PR!
+Open an issue or suggest a feature.
 Tested on T480 | X220 | R61i - reports for other models welcome.
 
 ---
 
-## 💙 Author
+## Author
 
 Maintained by [rahmed](https://github.com/rahmedi)
 Licensed under the GPL v3 License.
