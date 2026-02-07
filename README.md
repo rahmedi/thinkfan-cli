@@ -24,6 +24,12 @@ Please enable thinkpad acpi module to make thinkfan-cli work properly
 sudo modprobe thinkpad_acpi fan_control=1
 ```
 
+For libreboot/coreboot devices:
+
+```bash
+sudo modprobe thinkpad_acpi force_load=1 fan_control=1
+```
+
 ### Arch Linux (via AUR)
 
 ```bash
