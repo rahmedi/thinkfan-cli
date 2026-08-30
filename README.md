@@ -59,6 +59,15 @@ Note: Requires root privileges to write to `/proc/acpi/ibm/fan`.
 
 ---
 
+## Suggestion
+
+If `thinkfan-cli` doesn't work for you (e.g., `thinkpad_acpi` module breaks your Bluetooth or fan control), try my other tool:
+ **[tpfc-cli](https://github.com/rahmedi/tpfc-cli)**
+
+It works **without any kernel module**, accesses the fan directly via EC (Embedded Controller), and supports T430, T480 (and possibly more).
+
+---
+
 ## Feedbacks
 
 Open an issue or suggest a feature.
